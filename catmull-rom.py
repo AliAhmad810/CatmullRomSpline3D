@@ -59,9 +59,9 @@ class CatmullRom :
         t3 : float = self.tj(t2, P2, P3, alpha)
         t = np.linspace(t1, t2, num_points).reshape(num_points, 1)
 
-        A1 = ((t1 - t) / (t1 - t0)) * P0 + ((t - t0) / (t1 - t0)) * P1
-        A2 = ((t2 - t) / (t2 - t1)) * P1 + ((t - t1) / (t2 - t0)) * P2
-        A3 = ((t3 - t) / (t3 - t2)) * P2 + ((t - t2) / (t3 - t0)) * P3
+        A1 = ((t1 - t) / (t1 - t0)) * np.array(P0) + ((t - t0) / (t1 - t0)) * np.array(P1)
+        A2 = ((t2 - t) / (t2 - t1)) * np.array(P1) + ((t - t1) / (t2 - t1)) * np.array(P2)
+        A3 = ((t3 - t) / (t3 - t2)) * np.array(P2) + ((t - t2) / (t3 - t2)) * np.array(P3)
 
         B1 = ((t2 - t) / (t2 - t0)) * A1 + ((t - t0) / (t2 - t0)) * A2
         B2 = ((t3 - t) / (t3 - t1)) * A2 + ((t - t1) / (t3 - t1)) * A3
@@ -93,7 +93,7 @@ def generate_random_pts():
     """
 
     points = []
-    length = np.random.randint(2, 12)
+    length = np.random.randint(5, 7)
     for _ in range(length):
         point = [np.random.randint(0, 12), np.random.randint(0, 12), np.random.randint(0, 12)]
         points.append(point)
