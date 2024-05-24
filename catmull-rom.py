@@ -6,6 +6,7 @@ for generating Catmull-Rom splines from a sequence of control points.
 
 """
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class CatmullRom :
@@ -85,16 +86,29 @@ class CatmullRom :
         ]
         return [pt for spline in splines for pt in spline]
 
+def generate_random_pts():
+    """
+    Returns a list of a random amount of random points.
+    :return: Points.
+    """
+
+    points = []
+    length = np.random.randint(2, 12)
+    for _ in range(length):
+        point = [np.random.randint(0, 12), np.random.randint(0, 12), np.random.randint(0, 12)]
+        points.append(point)
+    
+    # Convert the list of points to a NumPy array
+    points_array = np.array(points)
+    return points_array
 
 
 if __name__ == "__main__" :
-    control_points = [(0, 0, 0), (1, 2, 1), (3, 3, 2), (4, 0, 3), (5, -1, 4)]
+    control_points = generate_random_pts()
     catmull_rom = CatmullRom()
     curve = catmull_rom.spline_chain(control_points, alpha=0.5, num_points=100)
 
     # Plot the result
-    import matplotlib.pyplot as plt
-
     curve_np = np.array(curve)
     control_points_np = np.array(control_points)
     fig = plt.figure()
