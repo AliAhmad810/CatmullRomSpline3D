@@ -1,4 +1,4 @@
-A Python module that calculates a Catmull-Rom spline chain in 3D and generates a plot.
+A Python module that calculates a randomly generated Catmull-Rom spline chain in 3D and generates a plot.
 
 # Installation
 Clone the repo:
