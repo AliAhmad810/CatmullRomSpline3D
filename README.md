@@ -9,4 +9,8 @@ Install the dependencies from `requirements.txt` :
 ```
 pip install -r /path/to/requirements.txt
 ```
-You're good to go! Use `Ctrl + Alt + N` to run the module. 
+Use `Ctrl + Alt + N` to run the module or `cd` into the directory and run: 
+```
+python -u catmull-rom.py
+```
+Enjoy!
