@@ -1,15 +1,16 @@
 """
 catmull-rom.py
+
+A Python module for computing Catmull-Rom splines.This module provides functionality 
+for generating Catmull-Rom splines from a sequence of control points.
+
 """
-
 import numpy as np
-
-__all__ = ["CatmullRom"]
 
 
 class CatmullRom :
-
-################################################################################
+    
+    @staticmethod
     def num_segments(points: tuple) -> int:
         """
         Returns the amount of segments included in the point chain. There are 
@@ -18,9 +19,9 @@ class CatmullRom :
         :param points: List of control points.
         :return: The number of segments in the spline.
         """
-        
         return len(points) - 3
-
+    
+    @staticmethod
     def tj(ti: float, Pi: tuple, Pj: tuple, alpha:float) -> float:
         """
         Returns the value of the next t depending on the distance between current
@@ -32,7 +33,6 @@ class CatmullRom :
             for chordal spline.
         :return: The value of the next t.
         """
-        # felt cute might rewrite
         return ((((Pi[0] - Pj[0]) ** 2) + ((Pi[1] - Pj[1]) ** 2) + ((Pi[2] - Pj[2]) ** 2)) ** 0.5) ** alpha + ti
     
     def spline(
@@ -50,12 +50,12 @@ class CatmullRom :
         :param alpha: 0.0 for uniform spline, 0.5 for centripetal spline, 1.0
             for chordal spline.
         :param num_points: Number of points that should make up the spline.
-        :return: List of points that make up the spline
+        :return: List of points that make up the spline.
         """
         t0 : float = 0.0
-        t1 : float = self.tj(t0, P0, P1)
-        t2 : float = self.tj(t1, P1, P2)
-        t3 : float = self.tj(t2, P2, P3)
+        t1 : float = self.tj(t0, P0, P1, alpha)
+        t2 : float = self.tj(t1, P1, P2, alpha)
+        t3 : float = self.tj(t2, P2, P3, alpha)
         t = np.linspace(t1, t2, num_points).reshape(num_points, 1)
 
         A1 = ((t1 - t) / (t1 - t0)) * P0 + ((t - t0) / (t1 - t0)) * P1
@@ -67,4 +67,39 @@ class CatmullRom :
 
         C = ((t2 - t) / (t2 - t1)) * B1 + ((t - t1) / (t2 - t1)) * B2
 
-        return C
+        return C.tolist()
+
+    def spline_chain(self, points: tuple, alpha : float, num_points: int) -> list :
+        """
+        Calculate Catmull-Rom spline chain for a sequence of control points.
+        :param points: Control points.
+        :param alpha: Alpha parameter for knot spacing.
+        :param num_points: The number of points to include in each.
+        :return: The chain of all points that make up the full spline.
+        """
+        point_quadruples = [
+            points[i:i + 4] for i in range(self.num_segments(points))
+        ]
+        splines = [
+            self.spline(*p_list, alpha, num_points) for p_list in point_quadruples
+        ]
+        return [pt for spline in splines for pt in spline]
+
+
+
+if __name__ == "__main__" :
+    control_points = [(0, 0, 0), (1, 2, 1), (3, 3, 2), (4, 0, 3), (5, -1, 4)]
+    catmull_rom = CatmullRom()
+    curve = catmull_rom.spline_chain(control_points, alpha=0.5, num_points=100)
+
+    # Plot the result
+    import matplotlib.pyplot as plt
+
+    curve_np = np.array(curve)
+    control_points_np = np.array(control_points)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(curve_np[:, 0], curve_np[:, 1], curve_np[:, 2], label="Catmull-Rom Spline")
+    ax.plot(control_points_np[:, 0], control_points_np[:, 1], control_points_np[:, 2], 'ro', label="Control Points")
+    plt.legend()
+    plt.show()
