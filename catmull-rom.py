@@ -4,6 +4,8 @@ catmull-rom.py
 A Python module for computing Catmull-Rom splines.This module provides functionality 
 for generating Catmull-Rom splines from a sequence of control points.
 
+Math retrieved from: https://qroph.github.io/2018/07/30/smooth-paths-using-catmull-rom-splines.html
+
 """
 import numpy as np
 import matplotlib.pyplot as plt
